@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface mutantRepository extends JpaRepository<Mutant, String>{
-    public List<Mutant> findBymutante(int mutante);
+    public List<Mutant> findByMutant(boolean mutant);
     public Mutant findByAdn(String adn);
 }
 

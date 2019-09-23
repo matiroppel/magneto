@@ -1,11 +1,1 @@
-{
-  "dna":
-  [
-    "ATGCGA",
-    "CAGTGC",
-    "TTATGT",
-    "AGAAGG",
-    "CCCCTA",
-    "TCACTG"
-  ]
-}
+{"adn":["ATGCGA","CAGTGC", "TTATGT", "AGAAGG", "CCCCTA", "TCACTG"]}

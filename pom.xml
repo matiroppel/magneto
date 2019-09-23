@@ -8,9 +8,9 @@
         <version>2.1.3.RELEASE</version>
     </parent>
     <groupId>com.magneto</groupId>
-    <artifactId>mutante</artifactId>
+    <artifactId>mutant</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>mutante</name>
+    <name>mutant</name>
     <description>Project for Magneto</description>
 
     <properties>

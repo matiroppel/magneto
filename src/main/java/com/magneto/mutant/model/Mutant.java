@@ -12,15 +12,15 @@ public class Mutant implements Serializable {
     @GeneratedValue(strategy=GenerationType.AUTO)
     private int id;
     private String adn;
-    private int mutante;
+    private boolean mutant;
 
     public Mutant() {
     }
 
-    public Mutant(int id, String adn, int mutante) {
+    public Mutant(int id, String adn, boolean mutant) {
         this.id = id;
         this.adn = adn;
-        this.mutante = mutante;
+        this.mutant = mutant;
     }
     
     public int getId() {
@@ -39,12 +39,12 @@ public class Mutant implements Serializable {
         this.adn = adn;
     }
 
-    public int getMutante() {
-        return mutante;
+    public boolean isMutant() {
+        return mutant;
     }
 
-    public void setMutante(int mutante) {
-        this.mutante = mutante;
+    public void setMutant(boolean mutant) {
+        this.mutant = mutant;
     }  
 
 }

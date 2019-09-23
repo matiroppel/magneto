@@ -9,6 +9,7 @@ import org.testng.annotations.Test;
 
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -22,28 +23,46 @@ public class MutantTest {
         Thread.sleep(2000);
     }
 
-    @DataProvider( name = "humanDNADataBase", parallel = true)
+    @DataProvider( name = "humanDNADataBase")
     public Object[][] humanDNADataBase(){
         return new Object[][]{
-                {"src/test/resources/DNA/dna1.json", true}
+                //{"src/test/resources/DNA/dna1.json", true},
+                {"src/test/resources/DNA/dna2.json", false}
+
         };
     }
 
     @Test( dataProvider = "humanDNADataBase")
-    public void mutanteTest(String mutantPath, boolean isMutant) throws IOException {
+    public void mutantTest(String mutantPath, boolean isMutant) throws IOException {
         String json = new String(Files.readAllBytes(Paths.get(mutantPath)));
         String result = sendAPIRequest("http://127.0.0.1:8080/mutant", "POST", json);
         Assert.assertNotNull(result);
         if (isMutant)
-            Assert.assertEquals(result, "Mutante");
+            Assert.assertEquals(result, "Mutant");
         else
-            Assert.assertEquals(result, "No-Mutante");
+            Assert.assertEquals(result, "No-mutant");
+    }
 
+    @Test
+    public void mutantStatsTest() throws IOException {
+        //String result = sendAPIRequest("http://127.0.0.1:8080/stats", "GET", "");
+        StringBuilder result = new StringBuilder();
+        URL url = new URL("http://127.0.0.1:8080/stats");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        String line;
+        while ((line = rd.readLine()) != null) {
+            result.append(line);
+        }
+        rd.close();
+        System.out.println(result);
+        Assert.assertNotNull(result);
     }
 
     private String sendAPIRequest(String targetURL, String type, String json) {
         HttpURLConnection connection = null;
-        String responseString;
+        String responseString = null;
         try {
             //Create connection
             URL url = new URL(targetURL);
@@ -69,6 +88,9 @@ public class MutantTest {
                 }
                 responseString = response.toString();
             }
+        } catch (IOException e){
+            if (e.getMessage().contains("Server returned HTTP response code: 403"))
+                return "No-mutant";
         } catch (Exception e) {
             e.printStackTrace();
             return null;
