@@ -3,6 +3,7 @@ package com.magneto.mutant.controller;
 import java.util.List;
 import com.magneto.mutant.model.Mutant;
 import com.magneto.mutant.model.MutantAux;
+import com.magneto.mutant.model.Stat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,16 +16,18 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 
 @RestController
 @RequestMapping("/")
 public class mutantController {
+    
     @Autowired
     mutantRepository repositorio;
         
     // Find
-    @GetMapping("/mutants")
+    @GetMapping("/allmutants")
     public List<Mutant> findAll() {
         return repositorio.findAll();
     }    
@@ -32,8 +35,7 @@ public class mutantController {
     // Save
     @PostMapping("/mutant")
     @ResponseStatus(HttpStatus.CREATED)
-    //public ResponseEntity<?> newMutant(@RequestBody MutantAux adn) {
-    public void isMutant(@RequestBody MutantAux adn) {
+    public ResponseEntity<?> isMutant(@RequestBody MutantAux adn) {
         JSONObject object = new JSONObject(adn);        
         JSONArray arrJson;
         Mutant mut = new Mutant();
@@ -43,11 +45,8 @@ public class mutantController {
         for (int i = 0; i < arrJson.length(); i++) {
             arr = arr+arrJson.getString(i);
         }
-        
-        System.out.println(arr);
-        
+                
         //--------------- Inicio
-        /*
         int count=0;
         int resp = 0;
         int x = 0, y = 1;
@@ -128,21 +127,30 @@ public class mutantController {
             if (resp>1){
                 mut.setAdn(arr);
                 mut.setMutante(1);
-                //return new ResponseEntity<>("Mutante", HttpStatus.OK);
+                repositorio.save(mut);
+                return new ResponseEntity<>("Mutante", HttpStatus.OK);
             }else{
                 mut.setAdn(arr);
                 mut.setMutante(0);
-                //return new ResponseEntity<>("No-Mutante", HttpStatus.FORBIDDEN);
-            }
-
-        }catch (Exception ex){
-            //return new ResponseEntity<>("Exception: "+ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }*/
+                repositorio.save(mut);
+                return new ResponseEntity<>("No-Mutante", HttpStatus.FORBIDDEN);
+            }     
         
-        //--------------- Fin
-        mut.setAdn(arr);
-        mut.setMutante(1);
-        repositorio.save(mut);
+        }catch (Exception ex){
+            return new ResponseEntity<>("Exception: "+ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        } //--------------- Fin
+    }
+    
+    @GetMapping("/stats")
+    public @ResponseBody Stat stats() throws Exception {
+        Stat res = new Stat();
+        List<Mutant> listMut,listHuman;
+        listMut = repositorio.findBymutante(1);
+        listHuman = repositorio.findBymutante(0);
+        res.setCount_human_dna(listHuman.size());
+        res.setCount_mutant_dna(listMut.size());
+        res.setRatio((double)listMut.size()/listHuman.size());
+        return res;
     }
 
 }

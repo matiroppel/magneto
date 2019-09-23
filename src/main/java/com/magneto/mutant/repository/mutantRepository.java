@@ -4,8 +4,9 @@ package com.magneto.mutant.repository;
 import java.util.List;
 import com.magneto.mutant.model.Mutant;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-//@Repository
+@Repository
 public interface mutantRepository extends JpaRepository<Mutant, String>{
     public List<Mutant> findBymutante(int mutante);
     public Mutant findByAdn(String adn);
